@@ -42,3 +42,31 @@ export const sendJSON = async function (url, uploadData) {
     throw err;
   }
 };
+
+export const numberToFraction = function (ingredientQuantity) {
+  if (parseFloat(ingredientQuantity) === parseInt(ingredientQuantity)) {
+    return ingredientQuantity;
+  }
+  const gcd = function (a, b) {
+    if (b < 0.0000001) {
+      return a;
+    }
+    return gcd(b, Math.floor(a % b));
+  };
+  const len = ingredientQuantity.toString().length - 2;
+  let denominator = Math.pow(10, len);
+  let numerator = ingredientQuantity * denominator;
+  var divisor = gcd(numerator, denominator);
+  numerator /= divisor;
+  denominator /= divisor;
+  let base = 0;
+  if (numerator > denominator) {
+    base = Math.floor(numerator / denominator);
+    numerator -= base * denominator;
+  }
+  ingredientQuantity = Math.floor(numerator) + '/' + Math.floor(denominator);
+  if (base) {
+    ingredientQuantity = base + ' ' + ingredientQuantity;
+  }
+  return ingredientQuantity;
+};
